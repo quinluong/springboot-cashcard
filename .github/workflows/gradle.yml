@@ -40,3 +40,4 @@ jobs:
         with:
           name: dist-files
           path: build/libs/*-SNAPSHOT.jar
+          if-no-files-found: error
