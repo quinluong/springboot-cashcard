@@ -36,25 +36,18 @@ jobs:
           cache: "gradle"
 
       - name: Build with Gradle
+        id: build-with-gradle
         run: ./gradlew build
 
-      #   - name: Cache Gradle
-      #     uses: actions/cache@v3
-      #     with:
-      #       path: |
-      #         ~/.gradle/caches
-      #         ~/.gradle/wrapper
-      #       key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-      #       restore-keys: |
-      #         ${{ runner.os }}-gradle-
-
-      #   - name: Build with Gradle
-      #     uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
-      #     with:
-      #       arguments: build
-      #       cache-disabled: false
+      - name: Compress tests report
+        id: compress-tests-report
+        uses: charlesworth/compress-action@1.0
+        with:
+          target-directory: "build/reports/tests"
 
       - name: Upload artifact
+        id: upload-artifact
+        if: success() && steps.build-with-gradle.outcome == 'failure'
         uses: actions/upload-artifact@v3
         with:
           name: dist-files
