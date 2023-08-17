@@ -22,7 +22,7 @@ jobs:
   build:
     strategy:
       matrix:
-        operating-system: [ubuntu-latest, windows-latest]
+        operating-system: [ubuntu-latest]
     runs-on: ${{ matrix.operating-system }}
     container: eclipse-temurin:17-alpine
     steps:
