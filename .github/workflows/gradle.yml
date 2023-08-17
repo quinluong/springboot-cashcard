@@ -39,18 +39,21 @@ jobs:
         id: build-with-gradle
         run: ./gradlew build
 
-      - name: Compress tests report
-        id: compress-tests-report
-        uses: charlesworth/compress-action@1.0
-        with:
-          target-directory: "build/reports/tests"
-
-      - name: Upload artifact
-        id: upload-artifact
-        if: success() && steps.build-with-gradle.outcome == 'failure'
+      - name: Upload tests report
+        id: upload-tests-report
+        if: failure() && steps.build-with-gradle.outcome == 'failure'
         uses: actions/upload-artifact@v3
         with:
-          name: dist-files
+          name: tests-report-files
+          path: build/reports/tests
+          if-no-files-found: error
+
+      - name: Upload Jar
+        id: upload-jar
+        if: success() && steps.build-with-gradle.outcome == 'success'
+        uses: actions/upload-artifact@v3
+        with:
+          name: jar-files
           path: build/libs/*-SNAPSHOT.jar
           if-no-files-found: error
 
@@ -61,7 +64,7 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v3
         with:
-          name: dist-files
+          name: jar-files
 
       - name: List all downloaded files
         run: ls
